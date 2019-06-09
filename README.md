@@ -1,9 +1,6 @@
 # Tutorial Asp.net Web API Core
 Por: Ramiro Andrés Bedoya Escobar
 
-NOTA: Puedes verificar la ultima versión y agregar comentarios al documento en el siguiente link
-[+Tutorial Asp.net Web API Core](https://paper.dropbox.com/doc/Tutorial-Asp.net-Web-API-Core-4vgKDquIVmI14Fybdj84u) 
-
 Tutorial de asp.net web api 
 Conceptos Generales de [Asp.Net](http://Asp.Net) Web Api Creación del un proyecto con VS 2017
 
@@ -579,7 +576,11 @@ Despues, vamos al archivo **Startup.cs,** en el método **ConfigureServices** y 
           // Registrar el generador Swagger
           services.AddSwaggerGen(c =>
           {
-              c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+              c.SwaggerDoc("v1", new Info { Title = "Mi Red Social", Version = "v1" });
+              // Guarda la ruta de los comentarios para el Swagger JSON y la UI.
+              var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+              var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+              c.IncludeXmlComments(xmlPath);
           });
         }
     
@@ -595,7 +596,7 @@ Despues, vamos al archivo **Startup.cs,** en el método **ConfigureServices** y 
           // especifica el Endpoint del JSON de Swagger.
           app.UseSwaggerUI(c =>
           {
-              c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+              c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mi Red Social v1");
           });
     
           //Resto del Método.
@@ -606,17 +607,76 @@ Despues, vamos al archivo **Startup.cs,** en el método **ConfigureServices** y 
     }
     
 
+Ejecutamos la aplicación y accedemos a la siguiente URL: https://localhost:44305/swagger
+
+Lo primero que encontramos es una aplicación web que lee el archivo swager.json
 
 
+![](https://paper-attachments.dropbox.com/s_89174DDDF7262C2B179DB61DFC52A1A64FDD6201EFF8F1A2E8B37CACA5FC093E_1560099855410_image.png)
 
-## Captura de logs con Log4net
-[ ] Trazabilidad y uso de sistemas de Log like Log4Net
+
+y si expandimos cada uno, podemos ver en detalle información del API 
+
+
+![](https://paper-attachments.dropbox.com/s_89174DDDF7262C2B179DB61DFC52A1A64FDD6201EFF8F1A2E8B37CACA5FC093E_1560100091121_image.png)
+
+
+y al final encontramos los modelos.
+
+
+![](https://paper-attachments.dropbox.com/s_89174DDDF7262C2B179DB61DFC52A1A64FDD6201EFF8F1A2E8B37CACA5FC093E_1560099895711_image.png)
+
+
+**Personalizando nuestros métodos.** 
+
+Para poder agregar comentarios a nuestros métodos y que se puedan ver reflejados en el swagger debemos habilitar el proyecto para que los comentarios se almacenen en un archivo XML. 
+
+En Visual Studio: 
+
+- Haga clic con el botón derecho en el **Explorador de soluciones** y seleccione **Editar <nombre_de_proyecto>.csproj**.
+- Agregue manualmente las líneas resaltadas al archivo *.csproj*
+
+
+    <PropertyGroup>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+Estas modificaciones se hacen con el fin de habilitar comentarios XML para miembros y tipos pùblicos sin documentación.  Y para evitar las advertencias a nivel de proyecto. Ahora si podemos agregar comentarios a nuestros métodos como por ejemplo: 
+
+
+![Comentarios básicos en Código](https://paper-attachments.dropbox.com/s_89174DDDF7262C2B179DB61DFC52A1A64FDD6201EFF8F1A2E8B37CACA5FC093E_1560101189966_image.png)
+
+
+Y podremos verlo reflejado así: 
+
+![Comentarios básicos en Swagger](https://paper-attachments.dropbox.com/s_89174DDDF7262C2B179DB61DFC52A1A64FDD6201EFF8F1A2E8B37CACA5FC093E_1560101163956_image.png)
+
+
+También podemos extender los comentarios agregando ejemplos de la siguiente forma: 
+
+
+![Comentarios de la función](https://paper-attachments.dropbox.com/s_89174DDDF7262C2B179DB61DFC52A1A64FDD6201EFF8F1A2E8B37CACA5FC093E_1560101658212_image.png)
+
+
+Y lo vemos reflejado de la siguiente forma:
+
+
+![Petición de ejemplo](https://paper-attachments.dropbox.com/s_89174DDDF7262C2B179DB61DFC52A1A64FDD6201EFF8F1A2E8B37CACA5FC093E_1560101712196_image.png)
+
+![Respuestas del API](https://paper-attachments.dropbox.com/s_89174DDDF7262C2B179DB61DFC52A1A64FDD6201EFF8F1A2E8B37CACA5FC093E_1560101731083_image.png)
+
+
+**Para poder ver más opciones de personalización visita la documentación oficial.**
+
+
+https://docs.microsoft.com/es-es/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.2&tabs=visual-studio
+
 ## 
 ## Enlaces Recomendados
 
 https://fullstackmark.com/post/18/building-aspnet-core-web-apis-with-clean-architecture
 
- 
 
 https://docs.microsoft.com/es-es/aspnet/core/mvc/controllers/routing?view=aspnetcore-2.2
 
